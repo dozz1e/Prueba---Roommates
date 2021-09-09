@@ -5,6 +5,7 @@ const send = require("./correo");
 const url = require("url");
 
 const nuevoGasto = async (req, res) => {
+  // Función crear nuevo gasto
   let body = "";
   req.on("data", (chunk) => {
     body += chunk.toString();
@@ -12,12 +13,13 @@ const nuevoGasto = async (req, res) => {
   req.on("end", () => {
     const gasto = JSON.parse(body);
     gasto.id = uuidv4();
-    guardarGasto(gasto, res);
-    send(gasto);
+    guardarGasto(gasto, res); // Guardar gasto
+    send(gasto); // enviar correos
   });
 };
 
 const guardarGasto = async (gasto, res) => {
+  // Función guardar gastos
   try {
     const gastosJSON = await JSON.parse(
       fs.readFileSync("./json/gastos.json", "utf8")
@@ -29,19 +31,20 @@ const guardarGasto = async (gasto, res) => {
         : console.log("Gasto Actualizado");
       res.end("Gasto actualizado con éxito");
     });
-    actualizarRommie(gasto);
+    actualizarRommie(gasto); // Actualizar gastos del roommate
   } catch (err) {
     console.log(err);
   }
 };
 
 const actualizarGasto = async (gastos, res) => {
+  // Actualizar gastos
   try {
     fs.writeFile("./json/gastos.json", JSON.stringify(gastos), (err) => {
       if (err) console.log("No se pudo agregar el gasto");
       else {
         console.log("Gasto Actualizado");
-        actualizarGastoRommie();
+        actualizarGastoRommie(); // Actulizar gastos del roommie
         res.end();
       }
     });
@@ -51,6 +54,7 @@ const actualizarGasto = async (gastos, res) => {
 };
 
 const eliminarGasto = async (id, res) => {
+  // Eliminar gasto
   try {
     const gastosJSON = await JSON.parse(
       fs.readFileSync("./json/gastos.json", "utf8")
@@ -60,13 +64,14 @@ const eliminarGasto = async (id, res) => {
     gastoUpdate.gastos = gastosJSON.gastos.filter((gasto) => {
       if (gasto.id != id) return gasto;
     });
-    actualizarGasto(gastoUpdate, res);
+    actualizarGasto(gastoUpdate, res); // Actualizar gastos
   } catch (err) {
     console.log(err);
   }
 };
 
 const actualizarGastoRommie = async () => {
+  // Actulizar los gastos de los roommates
   try {
     const gastosJSON = await JSON.parse(
       fs.readFileSync("./json/gastos.json", "utf8")
@@ -101,6 +106,7 @@ const actualizarGastoRommie = async () => {
 };
 
 const gastoPut = async (req, res) => {
+  // Actualizador de gastos desde el front
   let body = "";
   const params = url.parse(req.url, true).query;
   const idCosto = params.id;
@@ -126,7 +132,7 @@ const gastoPut = async (req, res) => {
       }
       return gasto;
     });
-    actualizarGasto(gastoUpdate, res);
+    actualizarGasto(gastoUpdate, res); // Actualizar gastos
   });
 };
 

@@ -3,13 +3,15 @@ const { v4: uuidv4 } = require("uuid");
 const fs = require("fs");
 
 const nuevoRommie = async (res) => {
+  // Crear nuevo roommate
   let newUsuario = {};
   await axios
-    .get("https://randomuser.me/api/")
+    .get("https://randomuser.me/api/") // Llamado a api
     .catch((err) => console.log(err))
     .then((datos) => {
       const data = datos.data.results;
       newUsuario = {
+        // Adjuntar id, debe,recibe, extra imagen
         id: uuidv4(),
         correo: data[0].email,
         nombre: `${data[0].name.first} ${data[0].name.last}`,
@@ -20,7 +22,7 @@ const nuevoRommie = async (res) => {
       return newUsuario;
     })
     .then(async (rommie) => {
-      await guardarRommie(rommie);
+      await guardarRommie(rommie); // Guardar roommate
       res.end(JSON.stringify(rommie));
     })
     .catch((err) => {
@@ -29,6 +31,7 @@ const nuevoRommie = async (res) => {
 };
 
 const guardarRommie = async (rommie) => {
+  // función guardar roommate
   try {
     const roommiesJSON = await JSON.parse(
       fs.readFileSync("./json/roommates.json", "utf8")
@@ -41,6 +44,7 @@ const guardarRommie = async (rommie) => {
 };
 
 const actualizarRommie = async (gasto) => {
+  // Función actualizar roommate
   try {
     const roommiesJSON = await JSON.parse(
       fs.readFileSync("./json/roommates.json", "utf8")

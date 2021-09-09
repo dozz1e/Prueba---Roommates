@@ -10,6 +10,7 @@ let transporter = nodemailer.createTransport({
 });
 
 const send = async (gasto) => {
+  // Envío correos
   try {
     const roommiesJSON = await JSON.parse(
       fs.readFileSync("./json/roommates.json", "utf8")
